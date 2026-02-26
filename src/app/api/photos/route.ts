@@ -50,8 +50,11 @@ export async function GET(request: NextRequest) {
     });
 
     return NextResponse.json(photos);
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching photos:", error);
+    if (error.code === "P2021" || error.message?.includes("table")) {
+      return NextResponse.json([]);
+    }
     return NextResponse.json(
       { error: "Failed to fetch photos" },
       { status: 500 }

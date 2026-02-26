@@ -40,8 +40,16 @@ export async function GET() {
       locations: locations.map((l) => l.location).filter(Boolean),
       totalPhotos: stats,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching stats:", error);
+    if (error.code === "P2021" || error.message?.includes("table")) {
+      return NextResponse.json({
+        years: [],
+        months: [],
+        locations: [],
+        totalPhotos: 0,
+      });
+    }
     return NextResponse.json(
       { error: "Failed to fetch stats" },
       { status: 500 }
